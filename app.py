@@ -62,7 +62,7 @@ def upload():
         # Save the file to ./uploads
         basepath = os.path.dirname(__file__)
         file_path = os.path.join(
-            basepath, 'uploads', secure_filename(f.filename))
+            basepath, secure_filename(f.filename))
         f.save(file_path)
 
         # Make prediction
@@ -81,8 +81,5 @@ def upload():
 
     #this section is used by gunicorn to serve the app on Heroku
 if __name__ == '__main__':
-        app.run(debug=True)
-    #uncomment this section to serve the app locally with gevent at:  http://localhost:5000
-    # Serve the app with gevent 
-    #http_server = WSGIServer(('', 5000), app)
-    #http_server.serve_forever()
+        app.run()
+    
