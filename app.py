@@ -68,12 +68,11 @@ def upload():
 		# Make prediction
 		preds = model_predict(file_path, model)
 		result=preds
-		str1 = 'Pneumonia'
-        	str2 = 'Normal'
+		
         	if preds == 1:
-            		return str1
+            		return 'Pneumonia'
         	else:
-            	return str2
+            		return 'Normal'
 		return result
 	return None
 	
