@@ -10,7 +10,7 @@ import numpy as np
 from tensorflow.keras.applications.imagenet_utils import preprocess_input, decode_predictions
 from tensorflow.keras.models import load_model
 from tensorflow.keras.preprocessing import image
-
+from PIL import Image
 # Flask utils
 from flask import Flask, redirect, url_for, request, render_template
 from werkzeug.utils import secure_filename
@@ -31,15 +31,18 @@ print('Model loaded. Start serving...')
 
 
 def model_predict(img_path, model):
-    img = image.load_img(img_path, target_size=(150, 150)) #target_size must agree with what the trained model expects!!
-
-    # Preprocessing the image
-    img = image.img_to_array(img)
-    img = np.expand_dims(img, axis=0)
-
-   
-    preds = model.predict(img)
-    return preds
+    image = Image.open(img_path)
+    img = image.resize((150, 150))
+    img = np.asarray(img).reshape((1, 150, 150, 1))/255
+    prediction = np.squeeze(model.predict(img))
+    if prediction < 0.5:
+        prediction = 0
+    else:
+        prediction = 1
+    
+    classes = {0:"Normal",1:"Pneumonia"}
+    
+    return classes[(prediction)]
 
 
 @app.route('/', methods=['GET'])
@@ -63,15 +66,7 @@ def upload():
         # Make prediction
         preds = model_predict(file_path, model)
         os.remove(file_path)#removes file from the server after prediction has been returned
-
-        # Arrange the correct return according to the model. 
-		# In this model 1 is Pneumonia and 0 is Normal.
-        str1 = 'Pneumonia'
-        str2 = 'Normal'
-        if preds == 1:
-            return str1
-        else:
-            return str2
+	return preds
     return None
 
     #this section is used by gunicorn to serve the app on Heroku
