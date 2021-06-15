@@ -36,6 +36,7 @@ print('Model loaded. Start serving...')
 
 
 def model_predict(img_path, model):
+	
     	img = image.load_img(img_path, target_size=(150,150,1)) #target_size must agree with what the trained model expects!!
 
     # Preprocessing the image
@@ -48,40 +49,34 @@ def model_predict(img_path, model):
 
 
 @app.route('/', methods=['GET'])
-def index():
-	
-	
+def index():	
     # Main page
     	return render_template('index.html')
 
 
 @app.route('/predict', methods=['GET', 'POST'])
 def upload():
-	f
-    if request.method == 'POST':
-        # Get the file from post request
-        f = request.files['file']
+	if request.method == 'POST':
+		# Get the file from post request
+		f = request.files['file']
 
-        # Save the file to ./uploads
-        basepath = os.path.dirname(__file__)
-        file_path = os.path.join(
-            basepath, secure_filename(f.filename))
-        f.save(file_path)
+		basepath = os.path.dirname(__file__)
+		file_path = os.path.join(
+		    basepath,  secure_filename(f.filename))
+		f.save(file_path)
 
-        # Make prediction
-        preds = model_predict(file_path, model)
-        os.remove(file_path)#removes file from the server after prediction has been returned
-
-        # Arrange the correct return according to the model. 
-		# In this model 1 is Pneumonia and 0 is Normal.
-        str1 = 'Pneumonia'
-        str2 = 'Normal'
-        if preds == 1:
-            return str1
-        else:
-            return str2
-    return None
-
+		# Make prediction
+		preds = model_predict(file_path, model)
+		result=preds
+		str1 = 'Pneumonia'
+        	str2 = 'Normal'
+        	if preds == 1:
+            		return str1
+        	else:
+            	return str2
+		return result
+	return None
+	
     #this section is used by gunicorn to serve the app on Heroku
 if __name__ == '__main__':
         app.run()
