@@ -11,7 +11,7 @@ import numpy as np
 from tensorflow.keras.applications.imagenet_utils import preprocess_input, decode_predictions
 from tensorflow.keras.models import load_model
 from tensorflow.keras.preprocessing import image
-
+from PIL import Image
 # Flask utils
 from flask import Flask, redirect, url_for, request, render_template
 from werkzeug.utils import secure_filename
@@ -38,12 +38,17 @@ print('Model loaded. Start serving...')
 def model_predict(img_path, model):
     img = image.load_img(img_path, target_size=(150, 150)) #target_size must agree with what the trained model expects!!
 
-    # Preprocessing the image
-    img = image.img_to_array(img)
-    img = np.expand_dims(img, axis=-1)
+#     # Preprocessing the image
+#     img = image.img_to_array(img)
+#     img = np.expand_dims(img, axis=-1)
 
    
-    preds = model.predict(img)
+#     preds = model.predict(img)
+    image = Image.open(img_path)
+    image = image.resize((150,150))
+    x = np.expand_dims(image, axis=0)
+    preds = model.predict(x)
+    preds=int(np.argmax(preds,axis =-1))
     return preds
 
 
