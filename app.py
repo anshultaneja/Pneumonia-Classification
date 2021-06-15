@@ -36,25 +36,28 @@ print('Model loaded. Start serving...')
 
 
 def model_predict(img_path, model):
-     img = image.load_img(img_path, target_size=(150,150,1)) #target_size must agree with what the trained model expects!!
+    	img = image.load_img(img_path, target_size=(150,150,1)) #target_size must agree with what the trained model expects!!
 
     # Preprocessing the image
-    img = image.img_to_array(img)
-    img = np.expand_dims(img, axis=0)
+    	img = image.img_to_array(img)
+    	img = np.expand_dims(img, axis=0)
 
    
-    preds = model.predict(img)
-    return preds
+    	preds = model.predict(img)
+    	return preds
 
 
 @app.route('/', methods=['GET'])
 def index():
+	
+	
     # Main page
-    return render_template('index.html')
+    	return render_template('index.html')
 
 
 @app.route('/predict', methods=['GET', 'POST'])
 def upload():
+	f
     if request.method == 'POST':
         # Get the file from post request
         f = request.files['file']
