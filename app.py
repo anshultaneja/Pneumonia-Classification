@@ -33,7 +33,7 @@ print('Model loaded. Start serving...')
 def model_predict(img_path, model):
     image = Image.open(img_path)
     img = image.resize((150, 150))
-    img = np.asarray(img).reshape((1, 150, 150, 1))/255
+    img = np.asarray(img).reshape((1, 150, 150, 1))/255.0
     prediction = np.squeeze(model.predict(img))
     if prediction < 0.5:
         prediction = 0
@@ -53,6 +53,7 @@ def index():
 
 @app.route('/predict', methods=['GET', 'POST'])
 def upload():
+	
     if request.method == 'POST':
         # Get the file from post request
         f = request.files['file']
@@ -66,7 +67,7 @@ def upload():
         # Make prediction
         preds = model_predict(file_path, model)
         os.remove(file_path)#removes file from the server after prediction has been returned
-	return preds
+	    return preds
     return None
 
     #this section is used by gunicorn to serve the app on Heroku
