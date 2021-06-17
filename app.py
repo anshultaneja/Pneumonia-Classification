@@ -31,44 +31,45 @@ print('Model loaded. Start serving...')
 
 
 def model_predict(img_path, model):
-    image = Image.open(img_path)
-    img = image.resize((150, 150))
-    img = np.asarray(img).reshape((1, 150, 150, 1))/255.0
-    prediction = np.squeeze(model.predict(img))
-    if prediction < 0.5:
-        prediction = 0
-    else:
-        prediction = 1
+	image = Image.open(img_path)
+        img = image.resize((150, 150))
+        img = np.asarray(img).reshape((1, 150, 150, 1))/255.0
+        prediction = np.squeeze(model.predict(img))
+	
+        if prediction < 0.5:
+		prediction = 0
+        else:
+        	prediction = 1
     
-    classes = {0:"Normal",1:"Pneumonia"}
+    	classes = {0:"Normal",1:"Pneumonia"}
     
-    return classes[(prediction)]
+   	return classes[(prediction)]
 
 
 @app.route('/', methods=['GET'])
 def index():
+	
     # Main page
-    return render_template('index.html')
+	return render_template('index.html')
 
 
 @app.route('/predict', methods=['GET', 'POST'])
 def upload():
-	
-    if request.method == 'POST':
-        # Get the file from post request
-        f = request.files['file']
+	if request.method == 'POST':
+		# Get the file from post request
+		f = request.files['file']
 
-        # Save the file to ./uploads
-        basepath = os.path.dirname(__file__)
-        file_path = os.path.join(
-            basepath, 'uploads', secure_filename(f.filename))
-        f.save(file_path)
+		# Save the file to ./uploads
+		basepath = os.path.dirname(__file__)
+		file_path = os.path.join(
+		    basepath, 'uploads', secure_filename(f.filename))
+		f.save(file_path)
 
-        # Make prediction
-        preds = model_predict(file_path, model)
-        os.remove(file_path)#removes file from the server after prediction has been returned
-	    return preds
-    return None
+		# Make prediction
+		preds = model_predict(file_path, model)
+		os.remove(file_path)#removes file from the server after prediction has been returned
+		return preds
+	 return None
 
     #this section is used by gunicorn to serve the app on Heroku
 if __name__ == '__main__':
