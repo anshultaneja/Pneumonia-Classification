@@ -14,7 +14,7 @@ from keras.preprocessing import image
 # Flask utils
 from flask import Flask, redirect, url_for, request, render_template
 from werkzeug.utils import secure_filename
-from gevent.wsgi import WSGIServer
+
 
 # Define a flask app
 app = Flask(__name__)
@@ -27,11 +27,6 @@ model = load_model(MODEL_PATH)
 #model._make_predict_function()          # Necessary to make everything ready to run on the GPU ahead of time
 print('Model loaded. Start serving...')
 
-# You can also use pretrained model from Keras
-# Check https://keras.io/applications/
-#from keras.applications.resnet50 import ResNet50
-#model = ResNet50(weights='imagenet')
-#print('Model loaded. Check http://127.0.0.1:5000/')
 
 
 def model_predict(img_path, model):
@@ -81,7 +76,4 @@ def upload():
     #this section is used by gunicorn to serve the app on Heroku
 if __name__ == '__main__':
         app.run()
-    #uncomment this section to serve the app locally with gevent at:  http://localhost:5000
-    # Serve the app with gevent 
-    #http_server = WSGIServer(('', 5000), app)
-    #http_server.serve_forever()
+    
