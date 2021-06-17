@@ -4,5 +4,4 @@ tensorflow-cpu==2.3.1
 Flask==2.0.1
 Werkzeug>=0.15.3
 Keras==2.1.5
-h5py==2.7.0
 
