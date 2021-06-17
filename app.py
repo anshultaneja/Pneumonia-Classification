@@ -20,7 +20,7 @@ from werkzeug.utils import secure_filename
 app = Flask(__name__)
 
 # Model saved with Keras model.save()
-MODEL_PATH = 'model_pneumonia.h5'
+MODEL_PATH = 'model.h5'
 
 #Load your trained model
 model = load_model(MODEL_PATH)
@@ -32,8 +32,8 @@ print('Model loaded. Start serving...')
 
 def model_predict(img_path, model):
     image = Image.open(img_path)
-    img = image.resize((150, 150))
-    img = np.asarray(img).reshape((1, 150, 150, 1))/255
+    img = image.resize((64,64))
+    img = np.asarray(img).reshape((1, 64, 64, 1))/255
     prediction = np.squeeze(model.predict(img))
     if prediction < 0.5:
         prediction = 0
