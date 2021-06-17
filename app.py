@@ -67,7 +67,7 @@ def upload():
         # Make prediction
         preds = model_predict(file_path, model)
         os.remove(file_path)#removes file from the server after prediction has been returned
-	    return preds
+	return preds
     return None
 
     #this section is used by gunicorn to serve the app on Heroku
